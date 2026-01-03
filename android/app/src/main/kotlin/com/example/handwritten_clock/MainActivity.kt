@@ -1,4 +1,4 @@
-package com.example.handwritten_clock
+package jp.tokyo.tapo.hwc
 
 import io.flutter.embedding.android.FlutterActivity
 
