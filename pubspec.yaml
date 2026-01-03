@@ -38,6 +38,8 @@ dependencies:
 
   signature: ^5.5.0  # 手書き用にあとから追加
   path_provider: ^2.1.2  # データ保存用にあとから追加
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

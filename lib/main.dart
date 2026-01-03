@@ -6,17 +6,29 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:signature/signature.dart';
 import 'package:flutter/services.dart'; // ステータスバー操作用
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 // main関数を書き換え
 void main() {
-  // アプリの準備ができるまで待つおまじない
   WidgetsFlutterBinding.ensureInitialized();
-
-  // ★ステータスバーとナビゲーションバーを隠す（没入モード）
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
+
+    // ★ここから追加：翻訳機能の有効化
+    localizationsDelegates: [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate,
+    ],
+    supportedLocales: [
+      Locale('en'), // 英語
+      Locale('ja'), // 日本語
+      // 必要なら他の言語も足せますが、基本はこの2つでOK
+    ],
+    // ★ここまで追加
+
     home: ClockScreen(),
   ));
 }
