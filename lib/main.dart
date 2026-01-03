@@ -9,27 +9,34 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 // main関数を書き換え
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+// Dartゾーンのエラーを捕捉する
+  runZonedGuarded(() {
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
+    runApp(const MaterialApp(
+      debugShowCheckedModeBanner: false,
 
-    // ★ここから追加：翻訳機能の有効化
-    localizationsDelegates: [
-      GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate,
-      GlobalCupertinoLocalizations.delegate,
-    ],
-    supportedLocales: [
-      Locale('en'), // 英語
-      Locale('ja'), // 日本語
-      // 必要なら他の言語も足せますが、基本はこの2つでOK
-    ],
-    // ★ここまで追加
+      // ★ここから追加：翻訳機能の有効化
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'), // 英語
+        Locale('ja'), // 日本語
+        // 必要なら他の言語も足せますが、基本はこの2つでOK
+      ],
+      // ★ここまで追加
 
-    home: ClockScreen(),
-  ));
+      home: ClockScreen(),
+    ));
+  }, (error, stack) {
+    // ここでエラー内容をprintしてもリリースビルドでは見えないため、
+    // 実際にはファイルに書き出すか、画面にエラーダイアログを出す処理などを入れる
+    debugPrint("CRASH ERROR: $error");
+  });
 }
 
 // ==========================================
@@ -418,11 +425,17 @@ class _ClockScreenState extends State<ClockScreen> {
       alignment: Alignment.center,
       child: !file.existsSync()
           ? Text('$number', style: TextStyle(color: _numColor, fontSize: 40))
-          : Image.file(file,
+          : Image.file(
+              file,
               fit: BoxFit.contain,
               key: UniqueKey(),
               color: _numColor,
-              colorBlendMode: BlendMode.srcIn),
+              colorBlendMode: BlendMode.srcIn,
+              errorBuilder: (context, error, stackTrace) {
+                return Text('$number',
+                    style: TextStyle(color: _numColor, fontSize: 40));
+              },
+            ),
     );
   }
 
